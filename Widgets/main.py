@@ -1,9 +1,17 @@
 from tkinter import *
+from MDI import *
+import Pmw, sys
 from PIL import Image, ImageTk
 import pymysql.cursors
 from validate_email import validate_email
 from tkintertable import TableCanvas, TableModel
 import tkinter as tk
+from iconPath import path as icoPath
+from ProgressBar import ProgressBar
+from FlatButtons import FlatRadiogroup
+from Tree import Tree
+from Toolbar import Toolbar
+
 try:
     from tkinter import messagebox
 except:
@@ -23,37 +31,58 @@ class Main:
     def event_ctrl_space(self, event):
         self.open_tab("xe_ra")
 
-    def open_tab(self, path): #Gọi theo class (import xxx --> self.app = xxx.tên class(self.newWindow) )
-        self.newWindow = Toplevel(self.window)
-        if path == "system":
-            self.app = DemoOpenTab(self.newWindow)        
-        if path == "xe_vao":
-            self.app = DemoOpenTab(self.newWindow)        
-        if path == "xe_ra":
-            self.app = DemoOpenTab(self.newWindow)        
-        if path == "report":
-            self.app = DemoOpenTab(self.newWindow)
-        if path == "tai_khoan":
-            self.app = TaiKhoan(self.newWindow)
-    
-    #def open_tab(self, path): #Gọi trực tiếp (import xxx --> xxx() or xxx.tên def)
+    #def open_tab(self, path): #Gọi theo class (import xxx --> self.app = xxx.tên class(self.newWindow) )
+        #self.newWindow = Toplevel(self.window)
         #if path == "system":
-            #system.main()
+        #    self.app = DemoOpenTab(self.newWindow)        
         #if path == "xe_vao":
+        #    self.app = DemoOpenTab(self.newWindow)        
         #if path == "xe_ra":
+        #    self.app = DemoOpenTab(self.newWindow)        
         #if path == "report":
+        #    self.app = DemoOpenTab(self.newWindow)
+        #if path == "tai_khoan":
+        #    self.app = TaiKhoan(self.newWindow)
+    
+    def open_tab(self, path): #Gọi trực tiếp (import xxx --> xxx() or xxx.tên def)
+        if path == "system":  
+            demo = self.window.newChild(title='system', iconfile=icoPath+'Parking.ico')
+            tab = ChildTab(demo)
+            tab.buildDemoTab()
+        if path == "xe_vao":
+            demo = self.window.newChild(title='system', iconfile=icoPath+'Parking.ico')
+            tab = ChildTab(demo)
+            tab.buildDemoTab()
+        if path == "xe_ra":
+            demo = self.window.newChild(title='system', iconfile=icoPath+'Parking.ico')
+            tab = ChildTab(demo)
+            tab.buildDemoTab()
+        if path == "report":
+            demo = self.window.newChild(title='system', iconfile=icoPath+'Parking.ico')
+            tab = ChildTab(demo)
+            tab.buildDemoTab()
+        if path == "tai_khoan":
+            childTab = self.window.newChild(title='Tài khoản', iconfile=icoPath+'Parking.ico')
+            TaiKhoan(childTab)
+        
+        if path == "ds_tai_khoan":
+            childTab = self.window.newChild(title='Danh sách tài khoản', iconfile=icoPath+'Parking.ico')
+            DSTaiKhoan(childTab)
+            
         #if path == "login":
+        
 
         
     def __init__(self, window):
         self.window = window
         window.geometry("1000x600")
         window.after_idle(lambda: window.minsize(200, 60))
-        window.wm_iconbitmap('icon/Parking.ico')
+        window.wm_iconbitmap(icoPath+'Parking.ico')
         window.title("Hệ thống quản lý bãi xe thông minh")
         
         ##khai báo
         var = StringVar()
+        
         ##check login
         if(Global.quyen == 0):
             window.destroy()
@@ -68,7 +97,7 @@ class Main:
             window.config(menu=menu_top)
             if(Global.quyen == 1):
                 subm_system = Menu(menu_top, tearoff=0)
-                menu_top.add_command(label="Hệ thống", command=lambda:self.open_tab("system"), underline=1)
+                menu_top.add_command(label="Hệ thống", command=lambda:self.open_tab("system"), underline=1)#system
                 window.bind("<Control-h>", self.event_ctrl_h)
                 #menu_top.add_cascade(label="Hệ thống", menu=subm_system)
             
@@ -77,6 +106,7 @@ class Main:
             menu_top.add_cascade(label="Quản lý", menu=subm_manage)
             subm_manage.add_command(label="Làn xe vào", command=lambda:self.open_tab("xe_vao"), accelerator="Ctrl+V")
             subm_manage.add_command(label="Làn xe ra", command=lambda:self.open_tab("xe_ra"), accelerator="Ctrl+Space")
+            subm_manage.add_command(label="new", command=lambda:self.newChild)
             if(Global.quyen == 1 or Global.quyen == 2):
                 subm_manage.add_command(label="Tài khoản", command=lambda:self.open_tab("tai_khoan")) #accelerator="Ctrl+Space"
             #window.bind("<Control-v>", self.event_ctrl_v) 
@@ -88,32 +118,47 @@ class Main:
                 menu_top.add_command(label="Báo cáo", command=lambda:self.open_tab("report"))
                 #menu_top.add_cascade(label="Báo cáo", menu=subm_report)
             
+            
             ##toolbar top
-            toolbar = Frame(window, bd=1, relief=FLAT)
+            #toolbar = Frame(window, bd=1, relief=FLAT)
             
-            img = Image.open("icon/phone.png")
-            img = img.resize((20, 20), Image.ANTIALIAS)
-            eimg = ImageTk.PhotoImage(img)
-            btn_phone = Button(toolbar, image=eimg, relief=FLAT, command=lambda:self.open_tab("phone"))
-            btn_phone.image = eimg
-            btn_phone.pack(side=LEFT, padx=2, pady=2)
+            #img = Image.open(path+"phone.png")
+            #img = img.resize((20, 20), Image.ANTIALIAS)
+            #eimg = ImageTk.PhotoImage(img)
+            #btn_phone = Button(toolbar, image=eimg, relief=FLAT, command=lambda:self.open_tab("phone"))
+            #btn_phone.image = eimg
+            #btn_phone.pack(side=LEFT, padx=2, pady=2)
             
-            img = Image.open("icon/pen.png")
-            img = img.resize((20, 20), Image.ANTIALIAS)
-            eimg = ImageTk.PhotoImage(img)
-            btn_pen = Button(toolbar, image=eimg, relief=FLAT, command=lambda:self.open_tab("pen"))
-            btn_pen.image = eimg
-            btn_pen.pack(side=LEFT, padx=2, pady=2)
+            #img = Image.open(path+"pen.png")
+            #img = img.resize((20, 20), Image.ANTIALIAS)
+            #eimg = ImageTk.PhotoImage(img)
+            #btn_pen = Button(toolbar, image=eimg, relief=FLAT, command=lambda:self.open_tab("pen"))
+            #btn_pen.image = eimg
+            #btn_pen.pack(side=LEFT, padx=2, pady=2)
+            
+            spaces = [window.topspace, window.leftspace, window.rightspace]
+
+            toolbar_top = Toolbar(window.topspace, dockingspaces=spaces, title='')
+            
+            toolbar_top.sendCommand(commandname='tk', command=lambda:self.open_tab("xe_vao"))
+            toolbar_top.addFlatbutton(imagefile=icoPath+'tk.gif', commandname='tk')
+            
+            toolbar_top.sendCommand(commandname='pen', command=lambda:self.open_tab("xe_vao"))
+            toolbar_top.addFlatbutton(imagefile=icoPath+'draw.gif', commandname='pen')
+        
             
             ##content
-            content = Frame(window, bg='gray', bd=1, relief=FLAT)
+            #content = Frame(window, bg='gray', bd=1, relief=FLAT)
+            
+            
             ##footer
-            footer = Frame(window, bd=1, relief=FLAT)
-            test = "##"
-            lbl_car_num = Label(footer, textvariable=var)
-            lbl_car_num.pack(side=LEFT, padx=2, pady=2)
-            var_str = "Số xe vào: "+ test +" Số xe ra: "+ test +" Xe còn lại: "+ test
-            var.set(var_str)
+ 
+            #footer = Frame(window, bd=1, relief=FLAT)
+            #test = "##"
+            #lbl_car_num = Label(footer, textvariable=var)
+            #lbl_car_num.pack(side=LEFT, padx=2, pady=2)
+            #var_str = "Số xe vào: "+ test +" Số xe ra: "+ test +" Xe còn lại: "+ test
+            #var.set(var_str)
             #lấy giá trị xe
             conn, cursor = Conn.conn, Conn.conn.cursor()
             sql = "SELECT * FROM tbllichsuguixe"
@@ -127,26 +172,22 @@ class Main:
                     car_out+=1
             car = car_in-car_out
             var_str = "Số xe vào: "+ str(car_in) +" Số xe ra: "+ str(car_out) +" Xe còn lại: "+ str(car)
-            var.set(var_str)
+            
+            teststatusbar = Label(window.statusbar, text=var_str)
+            teststatusbar.pack(side='left')
             
             ##chia tỉ lệ
-            window.columnconfigure(0, weight=1) # 100% 
+            #window.columnconfigure(0, weight=1) # 100% 
 
-            window.rowconfigure(0, weight=1) 
-            window.rowconfigure(1, weight=999) 
-            window.rowconfigure(2, weight=1)
+            #window.rowconfigure(0, weight=1) 
+            #window.rowconfigure(1, weight=999) 
+            #window.rowconfigure(2, weight=1)
 
-            toolbar.grid(row=0, sticky='news')
-            content.grid(row=1, sticky='news')
-            footer.grid(row=2, sticky='news')
-    
-class DemoOpenTab:
-    def __init__(self, window):
-        self.window = window
-        window.geometry("1000x600")
-        window.wm_iconbitmap('icon/Parking.ico')
-        window.title("Demo open tab")
+            #toolbar.grid(row=0, sticky='news')
+            #content.grid(row=1, sticky='news')
+            #footer.grid(row=2, sticky='news')
 
+   
 class Login:
     def login(self, var_name, var_pass, window):
         print('login func')       
@@ -187,7 +228,7 @@ class Login:
         self.window = window
         window.geometry("400x150")
         window.after_idle(lambda: window.minsize(window.winfo_width(), window.winfo_height()))
-        window.wm_iconbitmap('icon/Parking.ico')
+        window.wm_iconbitmap(icoPath+'Parking.ico')
         window.title("Login")
         
         ##khai báo
@@ -262,11 +303,11 @@ class TaiKhoan:
         self.app = DSTaiKhoan(self.newWindow)
         
     def __init__(self, window):
-        self.window = window
-        window.geometry("400x370+100+100")
-        window.after_idle(lambda: window.minsize(window.winfo_width(), window.winfo_height()))
-        window.wm_iconbitmap('icon/Parking.ico')
-        window.title("Tài khoản")
+        self.window = window.interior
+        window.setSize(leftPos=20, rightPos=420, topPos=20, bottomPos=390)#("400x370+100+100")
+        #window.after_idle(lambda: window.minsize(window.winfo_width(), window.winfo_height()))
+        #window.wm_iconbitmap(icoPath+'Parking.ico')
+        #window.title("Tài khoản")
         
         ##khai báo
         var_name = StringVar()
@@ -278,7 +319,7 @@ class TaiKhoan:
         var_quyen = StringVar()
         var_tamngung = StringVar()
         
-        frm_main = Frame(window)
+        frm_main = Frame(self.window)
         frm_main.pack(fill='both', expand=1)
         
         ##edit
@@ -395,7 +436,7 @@ class TaiKhoan:
             ))
         )
         btn_add.pack(side=LEFT, pady=(5, 5), padx=25)
-        window.bind('<Return>', lambda event=None: btn_add.invoke())
+        self.window.bind('<Return>', lambda event=None: btn_add.invoke())
         
 class DSTaiKhoan: 
        
@@ -447,7 +488,7 @@ class DSTaiKhoan:
         return user_dict
     def __init__(self, window):
         window.after_idle(lambda: window.minsize(window.winfo_width(), window.winfo_height()))
-        window.wm_iconbitmap('icon/Parking.ico')
+        window.wm_iconbitmap(path+'Parking.ico')
         window.title("danh sách tài khoản")
         window.after_idle(lambda: window.maxsize(780, 500))
 
@@ -566,8 +607,27 @@ class User:
             return True
         else:
             return False
+            
+            
+
+            
+class ChildTab:
+    def __init__(self, childTab):
+        self.childTab = childTab
+    def buildDemoTab(self):
+        window = self.childTab.interior
+        lbl = Label(window, text='demoTab')
+        lbl.pack()
+        self.childTab.widgetSetFocus(lbl)
+        
+        
+        
+        
+      
+   
 class Global:
     quyen = 0
+    
     
 class Conn:  
     conn = pymysql.connect(
@@ -587,7 +647,7 @@ def center(win):
     win.geometry('{}x{}+{}+{}'.format(width, height, x, y))
     
 def main_(): 
-    window = Tk()
+    window = MDIParent(title='MDIParent')
     app = Main(window)
     center(window)
     window.mainloop()
