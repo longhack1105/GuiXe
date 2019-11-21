@@ -61,13 +61,13 @@ class Main:
             demo = self.window.newChild(title='system', iconfile=icoPath+'Parking.ico')
             tab = ChildTab(demo)
             tab.buildDemoTab()
+            
         if path == "tai_khoan":
-            childTab = self.window.newChild(title='Tài khoản', iconfile=icoPath+'Parking.ico')
-            TaiKhoan(childTab)
+            TaiKhoan(self.window)
         
         if path == "ds_tai_khoan":
             childTab = self.window.newChild(title='Danh sách tài khoản', iconfile=icoPath+'Parking.ico')
-            DSTaiKhoan(childTab)
+            DSTaiKhoan(window)
             
         #if path == "login":
         
@@ -297,14 +297,16 @@ class TaiKhoan:
             conn.commit()
             messagebox.showinfo("Infor", "Thêm tài khoản thành công")
         
-    def danh_sach_tai_khoan(self):
+    def open_tab(self, path):
         print("danh sách tài khoản func")
-        self.newWindow = Toplevel(self.window)
-        self.app = DSTaiKhoan(self.newWindow)
+        if(path == 'ds_tai_khoan'):
+            DSTaiKhoan(self.window)
         
     def __init__(self, window):
-        self.window = window.interior
-        window.setSize(leftPos=20, rightPos=420, topPos=20, bottomPos=390)#("400x370+100+100")
+        self.window = window
+        childTab = window.newChild(title='Tài khoản', iconfile=icoPath+'Parking.ico')
+        childTab.setSize(leftPos=20, rightPos=420, topPos=20, bottomPos=390)#("400x370+100+100")
+        childFrame = childTab.interior
         #window.after_idle(lambda: window.minsize(window.winfo_width(), window.winfo_height()))
         #window.wm_iconbitmap(icoPath+'Parking.ico')
         #window.title("Tài khoản")
@@ -319,7 +321,7 @@ class TaiKhoan:
         var_quyen = StringVar()
         var_tamngung = StringVar()
         
-        frm_main = Frame(self.window)
+        frm_main = Frame(childFrame)
         frm_main.pack(fill='both', expand=1)
         
         ##edit
@@ -420,7 +422,7 @@ class TaiKhoan:
         frm_btn.pack(pady=10, fill='y')
         
         if(Global.quyen == 1 or Global.quyen == 2):
-            btn_ds = Button(frm_btn, text ="Danh sách TK", width=10, command = lambda: self.danh_sach_tai_khoan())
+            btn_ds = Button(frm_btn, text ="Danh sách TK", width=10, command = lambda: self.open_tab('ds_tai_khoan'))
             btn_ds.pack(side=LEFT, pady=(5, 5), padx=25)
         
         btn_add = Button(frm_btn, text ="Thêm TK ->", width=10, 
@@ -436,7 +438,7 @@ class TaiKhoan:
             ))
         )
         btn_add.pack(side=LEFT, pady=(5, 5), padx=25)
-        self.window.bind('<Return>', lambda event=None: btn_add.invoke())
+        childFrame.bind('<Return>', lambda event=None: btn_add.invoke())
         
 class DSTaiKhoan: 
        
@@ -487,15 +489,18 @@ class DSTaiKhoan:
             i+=1
         return user_dict
     def __init__(self, window):
-        window.after_idle(lambda: window.minsize(window.winfo_width(), window.winfo_height()))
-        window.wm_iconbitmap(path+'Parking.ico')
-        window.title("danh sách tài khoản")
-        window.after_idle(lambda: window.maxsize(780, 500))
+        childTab = window.newChild(title='Danh sách tài khoản', iconfile=icoPath+'Parking.ico')
+        childTab.setSize(leftPos=20, rightPos=800, topPos=20, bottomPos=420)#("400x370+100+100")
+        childFrame = childTab.interior
+        #window.after_idle(lambda: window.minsize(window.winfo_width(), window.winfo_height()))
+        #window.wm_iconbitmap(path+'Parking.ico')
+        #window.title("danh sách tài khoản")
+        #window.after_idle(lambda: window.maxsize(780, 500))
 
         ##data
         user_dict = self.makeDirectionary()
         ##tạo bảng
-        table_frame = Frame(window)
+        table_frame = Frame(childFrame)
         table_frame.pack(side=TOP)
         table = TableCanvas(table_frame,
                 width=780,
@@ -519,7 +524,7 @@ class DSTaiKhoan:
         #getdatafix
         data_user = table.model.data
         #btn
-        frm_btn = Frame(window)
+        frm_btn = Frame(childFrame)
         frm_btn.pack(side=BOTTOM)
         
         btn_fix = Button(frm_btn, text='Cập nhập dữ liệu',command=lambda:self.fix(data_user))
