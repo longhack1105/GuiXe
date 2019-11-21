@@ -95,9 +95,13 @@ class Main:
             ##menu top
             menu_top = Menu(window)
             window.config(menu=menu_top)
-            if(Global.quyen == 1):
+            if(Global.quyen == 1 or Global.quyen == 2):
                 subm_system = Menu(menu_top, tearoff=0)
-                menu_top.add_command(label="Hệ thống", command=lambda:self.open_tab("system"), underline=1)#system
+                menu_top.add_cascade(label="Hệ thống", menu=subm_system)
+                if(Global.quyen == 1):
+                    subm_system.add_command(label="Hệ thống", command=lambda:self.open_tab("system"), underline=1)#system
+                
+                subm_system.add_command(label="Tài khoản", command=lambda:self.open_tab("tai_khoan")) #accelerator="Ctrl+Space"
                 window.bind("<Control-h>", self.event_ctrl_h)
                 #menu_top.add_cascade(label="Hệ thống", menu=subm_system)
             
@@ -106,9 +110,7 @@ class Main:
             menu_top.add_cascade(label="Quản lý", menu=subm_manage)
             subm_manage.add_command(label="Làn xe vào", command=lambda:self.open_tab("xe_vao"), accelerator="Ctrl+V")
             subm_manage.add_command(label="Làn xe ra", command=lambda:self.open_tab("xe_ra"), accelerator="Ctrl+Space")
-            subm_manage.add_command(label="new", command=lambda:self.newChild)
-            if(Global.quyen == 1 or Global.quyen == 2):
-                subm_manage.add_command(label="Tài khoản", command=lambda:self.open_tab("tai_khoan")) #accelerator="Ctrl+Space"
+                
             #window.bind("<Control-v>", self.event_ctrl_v) 
             window.bind("<Control-v>", self.event_ctrl_v) 
             window.bind("<Control-space>", self.event_ctrl_space)
