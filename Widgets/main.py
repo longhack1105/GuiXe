@@ -11,6 +11,7 @@ from ProgressBar import ProgressBar
 from FlatButtons import FlatRadiogroup
 from Tree import Tree
 from Toolbar import Toolbar
+import xeVao
 
 try:
     from tkinter import messagebox
@@ -20,7 +21,12 @@ except:
 ##
 
 
-##
+
+
+
+
+
+##################################################
 class Main:
     def event_ctrl_h(self, event):
         self.open_tab("system")
@@ -49,10 +55,10 @@ class Main:
             demo = self.window.newChild(title='system', iconfile=icoPath+'Parking.ico')
             tab = ChildTab(demo)
             tab.buildDemoTab()
+            
         if path == "xe_vao":
-            demo = self.window.newChild(title='system', iconfile=icoPath+'Parking.ico')
-            tab = ChildTab(demo)
-            tab.buildDemoTab()
+            xeVao.XeVao(self.window)
+            
         if path == "xe_ra":
             demo = self.window.newChild(title='system', iconfile=icoPath+'Parking.ico')
             tab = ChildTab(demo)
@@ -70,16 +76,14 @@ class Main:
             DSTaiKhoan(window)
             
         #if path == "login":
-        
-
-        
+         
     def __init__(self, window):
         self.window = window
-        window.geometry("1000x600")
+        #window.geometry("1500x700")
         window.after_idle(lambda: window.minsize(200, 60))
         window.wm_iconbitmap(icoPath+'Parking.ico')
         window.title("Hệ thống quản lý bãi xe thông minh")
-        
+        window.geometry("%dx%d+0+0" % (window.winfo_screenwidth()-100, window.winfo_screenheight()-70))
         ##khai báo
         var = StringVar()
         
@@ -189,7 +193,14 @@ class Main:
             #content.grid(row=1, sticky='news')
             #footer.grid(row=2, sticky='news')
 
-   
+
+
+
+
+
+
+
+#######################################################################
 class Login:
     def login(self, var_name, var_pass, window):
         print('login func')       
@@ -233,6 +244,7 @@ class Login:
         window.wm_iconbitmap(icoPath+'Parking.ico')
         window.title("Login")
         
+        
         ##khai báo
         var_pass = StringVar()
         var_name = StringVar()
@@ -247,6 +259,7 @@ class Login:
         
         entry_name = Entry(frame_name, textvariable=var_name, bd=2, width=25)
         entry_name.pack(side = RIGHT)
+        entry_name.focus_set ()
         
         #pass
         frame_pass = Frame(window, bd=1, relief=FLAT)
@@ -269,6 +282,7 @@ class Login:
         
         #
         
+#########################################################################
 class TaiKhoan:
     def add(self, user):
         print("Add func")
@@ -442,6 +456,9 @@ class TaiKhoan:
         btn_add.pack(side=LEFT, pady=(5, 5), padx=25)
         childFrame.bind('<Return>', lambda event=None: btn_add.invoke())
         
+        
+        
+#########################################################################################
 class DSTaiKhoan: 
        
     def fix(self, data_user):
@@ -532,7 +549,10 @@ class DSTaiKhoan:
         btn_fix = Button(frm_btn, text='Cập nhập dữ liệu',command=lambda:self.fix(data_user))
         btn_fix.pack(pady=10)
         table.redraw()
-
+        
+        
+        
+#################################################################################################################
 class User:
     def __init__(self, idNguoiDung, passw, hoDem, ten, dienThoai, email, idQuyen, tamNgung):
         self.idNguoiDung = idNguoiDung
@@ -616,7 +636,7 @@ class User:
             return False
             
             
-
+##################################################################################################
             
 class ChildTab:
     def __init__(self, childTab):
@@ -630,7 +650,7 @@ class ChildTab:
         
         
         
-      
+################################################################################################### 
    
 class Global:
     quyen = 0
@@ -645,13 +665,14 @@ class Conn:
         cursorclass = pymysql.cursors.DictCursor)
     print ("connect ok!!")
     
-def center(win):
-    win.update_idletasks()
-    width = win.winfo_width()
-    height = win.winfo_height()
-    x = (win.winfo_screenwidth() // 2) - (width // 2)
-    y = (win.winfo_screenheight() // 2) - (height // 2)
-    win.geometry('{}x{}+{}+{}'.format(width, height, x, y))
+    
+def center(window):
+    window.update_idletasks()
+    width = window.winfo_width()
+    height = window.winfo_height()
+    x = (window.winfo_screenwidth() // 2) - (width // 2)
+    y = (window.winfo_screenheight() // 2) - (height // 2)
+    window.geometry('{}x{}+{}+{}'.format(width, height, x, y))
     
 def main_(): 
     window = MDIParent(title='MDIParent')
