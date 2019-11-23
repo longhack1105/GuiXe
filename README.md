@@ -1,1 +1,2 @@
 # GuiXe
+run main.py
