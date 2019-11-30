@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 16, 2019 at 02:16 AM
+-- Generation Time: Nov 30, 2019 at 02:40 AM
 -- Server version: 10.4.8-MariaDB
 -- PHP Version: 7.3.11
 
@@ -86,6 +86,14 @@ CREATE TABLE `tbllichsuguixe` (
   `DoChinhXac` double(4,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+--
+-- Dumping data for table `tbllichsuguixe`
+--
+
+INSERT INTO `tbllichsuguixe` (`IdGui`, `IdCam`, `NgayTao`, `BienSo`, `HinhAnh`, `MaXacNhan`, `TrangThai`, `IdNguoiDung`, `DoChinhXac`) VALUES
+(15, 1, '2019-11-12 00:00:00', '29N14129', '11', 1, '11', 'admin', 70.00),
+(26, 2, '2019-11-12 00:00:00', '1111', '11', 1, '11', 'admin', 70.00);
+
 -- --------------------------------------------------------
 
 --
@@ -161,8 +169,8 @@ INSERT INTO `tblquyen` (`IdQuyen`, `TenQuyen`, `MoTa`) VALUES
 
 CREATE TABLE `tblxecudan` (
   `BienSo` char(10) COLLATE utf8_unicode_ci NOT NULL,
-  `IdCuDan` int(11) NOT NULL,
-  `IdLoaiXe` int(11) NOT NULL,
+  `IdCuDan` int(11) DEFAULT NULL,
+  `IdLoaiXe` int(11) DEFAULT NULL,
   `MauSac` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
   `TamNgung` bit(1) NOT NULL DEFAULT b'0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -172,6 +180,7 @@ CREATE TABLE `tblxecudan` (
 --
 
 INSERT INTO `tblxecudan` (`BienSo`, `IdCuDan`, `IdLoaiXe`, `MauSac`, `TamNgung`) VALUES
+('1111', NULL, NULL, '', b'0'),
 ('29N14129', 1, 1, 'Vàng', b'0');
 
 --
@@ -195,9 +204,9 @@ ALTER TABLE `tblcudan`
 --
 ALTER TABLE `tbllichsuguixe`
   ADD PRIMARY KEY (`IdGui`),
-  ADD UNIQUE KEY `IdCam` (`IdCam`),
-  ADD UNIQUE KEY `IdNguoiDung` (`IdNguoiDung`),
-  ADD UNIQUE KEY `BienSo` (`BienSo`);
+  ADD UNIQUE KEY `BienSo` (`BienSo`),
+  ADD KEY `IdCam` (`IdCam`),
+  ADD KEY `IdNguoiDung` (`IdNguoiDung`);
 
 --
 -- Indexes for table `tblloaixe`
@@ -223,8 +232,8 @@ ALTER TABLE `tblquyen`
 --
 ALTER TABLE `tblxecudan`
   ADD PRIMARY KEY (`BienSo`) USING BTREE,
-  ADD UNIQUE KEY `IdCuDan` (`IdCuDan`),
-  ADD UNIQUE KEY `IdLoaiXe` (`IdLoaiXe`);
+  ADD UNIQUE KEY `IdLoaiXe` (`IdLoaiXe`),
+  ADD UNIQUE KEY `IdCuDan` (`IdCuDan`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -234,7 +243,7 @@ ALTER TABLE `tblxecudan`
 -- AUTO_INCREMENT for table `tbllichsuguixe`
 --
 ALTER TABLE `tbllichsuguixe`
-  MODIFY `IdGui` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `IdGui` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- Constraints for dumped tables
@@ -244,9 +253,9 @@ ALTER TABLE `tbllichsuguixe`
 -- Constraints for table `tbllichsuguixe`
 --
 ALTER TABLE `tbllichsuguixe`
-  ADD CONSTRAINT `tbllichsuguixe_ibfk_1` FOREIGN KEY (`IdCam`) REFERENCES `tblcamera` (`IdCam`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `tbllichsuguixe_ibfk_2` FOREIGN KEY (`IdNguoiDung`) REFERENCES `tblnguoidung` (`IdNguoiDung`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `tbllichsuguixe_ibfk_3` FOREIGN KEY (`BienSo`) REFERENCES `tblxecudan` (`BienSo`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `tbllichsuguixe_ibfk_3` FOREIGN KEY (`BienSo`) REFERENCES `tblxecudan` (`BienSo`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `tbllichsuguixe_ibfk_4` FOREIGN KEY (`IdCam`) REFERENCES `tblcamera` (`IdCam`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  ADD CONSTRAINT `tbllichsuguixe_ibfk_5` FOREIGN KEY (`IdNguoiDung`) REFERENCES `tblnguoidung` (`IdNguoiDung`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `tblnguoidung`
