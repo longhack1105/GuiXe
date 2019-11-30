@@ -2,7 +2,6 @@ from tkinter import *
 from MDI import *
 import Pmw, sys
 from PIL import Image, ImageTk
-import pymysql.cursors
 from validate_email import validate_email
 from tkintertable import TableCanvas, TableModel
 import tkinter as tk
@@ -11,8 +10,11 @@ from ProgressBar import ProgressBar
 from FlatButtons import FlatRadiogroup
 from Tree import Tree
 from Toolbar import Toolbar
-import xeVao
-
+import XeVao
+from Connect import Conn
+from Global import Global
+from Obj.User import User
+from XeRa import XeRa
 try:
     from tkinter import messagebox
 except:
@@ -57,12 +59,11 @@ class Main:
             tab.buildDemoTab()
             
         if path == "xe_vao":
-            xeVao.XeVao(self.window)
+            XeVao.XeVao(self.window)
             
         if path == "xe_ra":
-            demo = self.window.newChild(title='system', iconfile=icoPath+'Parking.ico')
-            tab = ChildTab(demo)
-            tab.buildDemoTab()
+            XeRa(self.window)
+            
         if path == "report":
             demo = self.window.newChild(title='system', iconfile=icoPath+'Parking.ico')
             tab = ChildTab(demo)
@@ -166,7 +167,7 @@ class Main:
             #var_str = "Số xe vào: "+ test +" Số xe ra: "+ test +" Xe còn lại: "+ test
             #var.set(var_str)
             #lấy giá trị xe
-            conn, cursor = Conn.conn, Conn.conn.cursor()
+            conn, cursor = Conn.getConn()
             sql = "SELECT * FROM tbllichsuguixe"
             cursor.execute(sql)
             car_in = 0
@@ -204,7 +205,7 @@ class Main:
 class Login:
     def login(self, var_name, var_pass, window):
         print('login func')       
-        conn, cursor = Conn.conn, Conn.conn.cursor()
+        conn, cursor = Conn.getConn()
         sql = "SELECT * FROM tblnguoidung"
         cursor.execute(sql)
         name = var_name.get()
@@ -288,7 +289,7 @@ class TaiKhoan:
         print("Add func")
         user.showUser()
         
-        conn, cursor = Conn.conn, Conn.conn.cursor() 
+        conn, cursor = Conn.getConn()
         
         #print(user.isValueEmail())
         #print(user.isValuephone())
@@ -466,7 +467,7 @@ class DSTaiKhoan:
         print('fix fuc')
         print(data_user)
         
-        conn, cursor = Conn.conn, Conn.conn.cursor()
+        conn, cursor = Conn.getConn()
         
         
         try:
@@ -498,7 +499,7 @@ class DSTaiKhoan:
     def makeDirectionary(self):
         user_dict = {}
         ##lấy data
-        conn, cursor = Conn.conn, Conn.conn.cursor()
+        conn, cursor = Conn.getConn()
         sql = "SELECT * FROM tblnguoidung"
         cursor.execute(sql)
         i=0
@@ -550,92 +551,7 @@ class DSTaiKhoan:
         btn_fix.pack(pady=10)
         table.redraw()
         
-        
-        
-#################################################################################################################
-class User:
-    def __init__(self, idNguoiDung, passw, hoDem, ten, dienThoai, email, idQuyen, tamNgung):
-        self.idNguoiDung = idNguoiDung
-        self.passw = passw
-        self.hoDem = hoDem
-        self.ten = ten
-        self.dienThoai = dienThoai
-        self.email = email
-        self.idQuyen = idQuyen
-        self.tamNgung = tamNgung
-    
-    def getIdNguoiDung(self):
-        return self.idNguoiDung
-        
-    def getPassw(self):
-        return self.passw
-        
-    def getHoDem(self):
-        return self.hoDem
-        
-    def getTen(self):
-        return self.ten
-        
-    def getDienThoai(self):
-        return self.dienThoai
-        
-    def getEmail(self):
-        return self.email
-        
-    def getIdQuyen(self):
-        return self.idQuyen
-        
-    def getTamNgung(self):
-        return self.tamNgung
-        
-    def showUser(self):
-        print(
-            self.idNguoiDung,
-            self.passw,
-            self.hoDem,
-            self.ten,
-            self.dienThoai,
-            self.email,
-            self.idQuyen,
-            self.tamNgung
-        )
-    def isNull(self):
-        if(
-            self.idNguoiDung == "" or
-            self.passw == "" or
-            self.hoDem == "" or
-            self.ten == "" or
-            self.dienThoai == "" or
-            self.email == ""
-        ):
-            return True
-        else:
-            return False
-            
-    def isLoopIdNguoiDung(self):
-        conn, cursor = Conn.conn, Conn.conn.cursor() 
-        sql = "SELECT * FROM tblnguoidung"
-        cursor.execute(sql)
-        for row in cursor:
-            if(self.idNguoiDung == row['IdNguoiDung']):
-                return True
-                break
-            else:
-                return False
-                break
-    
-    def isValueEmail(self):
-        return validate_email(self.email)
-        
-    def isValuephone(self):
-        if len(self.dienThoai) != 10 and len(self.dienThoai) != 11 and len(self.dienThoai) != 12 :
-            return False
-        elif self.dienThoai.isdigit():
-            return True
-        else:
-            return False
-            
-            
+          
 ##################################################################################################
             
 class ChildTab:
@@ -646,25 +562,11 @@ class ChildTab:
         lbl = Label(window, text='demoTab')
         lbl.pack()
         self.childTab.widgetSetFocus(lbl)
-        
-        
-        
+
         
 ################################################################################################### 
    
-class Global:
-    quyen = 0
-    
-    
-class Conn:  
-    conn = pymysql.connect(
-        host = 'localhost',
-        user = 'root',
-        password = '',                             
-        db = 'qlbaixe',
-        cursorclass = pymysql.cursors.DictCursor)
-    print ("connect ok!!")
-    
+
     
 def center(window):
     window.update_idletasks()
