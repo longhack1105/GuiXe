@@ -43,38 +43,39 @@ class XeRa:
         #width, height = 290, 150
         self.width_video, self.height_video = 290, 150
         
-        try: self.cap = cv2.VideoCapture(0)  
+        try: self.cap = cv2.VideoCapture('rtsp://admin:88888888abc@192.168.111.198:554/user=admin_password=1b4vojqw_channel=1_stream=0.sdp')  
         except: 
             self.cap.release() 
-            self.cap = cv2.VideoCapture(0)
+            self.cap = cv2.VideoCapture('rtsp://admin:88888888abc@192.168.111.198:554/user=admin_password=1b4vojqw_channel=1_stream=0.sdp')
         self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, self.width_video)
         self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height_video) 
         def show_frame():
+            
             _, frame = self.cap.read()
-            frame = cv2.flip(frame, 1)
+            #frame = cv2.flip(frame, 1)
             cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
             img = Image.fromarray(cv2image)
-            
+                
             try: 
                 #self.width_video, self.height_video = lblCamPlate.winfo_width()-4, lblCamPlate.winfo_height()-4
                 img = img.resize((self.width_video, self.height_video),Image.ANTIALIAS)
             except: pass
-            
+                
             imgtk = ImageTk.PhotoImage(image=img)
-            
+                
             lblCamFace.imgtk = imgtk
             lblCamFace.configure(image=imgtk)
-            
+                
             lblCamPlate.imgtk = imgtk
             lblCamPlate.configure(image=imgtk)
-            
-            lblCamPlate.after(100, show_frame)
+
+            lblCamPlate.after(40, show_frame)
 
         self.dem = 0    
         def resize_video(event):
             #self.check=1
-            self.dem+=1
-            print('%s' % str(self.dem))
+            #self.dem+=1
+            #print('%s' % str(self.dem))
             
             height = lblCamPlate.winfo_height()
             width = lblCamPlate.winfo_width()
@@ -219,7 +220,6 @@ class XeRa:
         
         self.display = Canvas(frm_picin_plate, bd=0, highlightthickness=0)
         self.display.create_image(0, 0, image=self.img, anchor=NW, tags="IMG")
-
         self.display.pack(side=BOTTOM, fill=BOTH, expand=1)
 
 
@@ -338,7 +338,6 @@ class XeRa:
         
 
         try:
-
             self.etrPlateOut.config(width=1)
             self.etrPlateIn.config(width=1)
             
@@ -346,6 +345,7 @@ class XeRa:
             self.img = ImageTk.PhotoImage(resized)
             self.display.delete("IMG")
             self.display.create_image(0, 0, image=self.img, anchor=NW, tags="IMG")
+
             self.display.config(width=self.display4.winfo_width(), height=self.display4.winfo_height())
             
             resized2 = self.imgData2.resize(size,Image.ANTIALIAS)
